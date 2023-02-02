@@ -55,7 +55,7 @@ with open("counts.log", "w") as counts:
                     f2M += 1
 
         counter += 1
-        res = "\nCount in File 1: {}/{}\nCount in File 2: {}/{}".format(f1M, freq1, f2M, freq2)
+        res = "\nFrequency in File 1: {}/{}\nFrequency in File 2: {}/{}".format(f1M, freq1, f2M, freq2)
         print(res)
         counts.write(res)
         time.sleep(0.5)
