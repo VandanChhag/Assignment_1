@@ -12,8 +12,10 @@
 
 import random
 import string
-import time
+from datetime import datetime
+import asyncio
 
+c1,c2= 0,0
 
 def string_generator():
     op1 = "".join(random.choices(string.ascii_letters, k=random.randint(5, 10)))
@@ -21,41 +23,34 @@ def string_generator():
     return random.choices(li, weights=[1.1, 1])[0] + " "
 
 
-counter, f1M, freq1, f2M, freq2, flag = 0, 0, 0, 0, 0, 0
+async def f1writer(loop):
+    global c1
+    with open("file1.txt", "a") as f1:
+        pstring = string_generator()
+        f1.write(pstring)
+        if pstring == "MARUTI ":
+            c1 += 1
+            with open("counts.log", "a") as count:
+                count.write("\nFile 1 has MARUTI Keywords " + str(c1) + " times at time " + str(datetime.now()))
+    await asyncio.sleep(0.5)
+    return (await f1writer(loop))
 
-with open("counts.log", "w") as counts:
-    while True:
-        if counter % 2 == 0:
 
-            pstring = string_generator()
+async def f2writer(loop):
+    global c2
+    with open("file2.txt", "a") as f2:
+        pstring = string_generator()
+        f2.write(pstring)
+        if pstring == "MARUTI ":
+            c2 += 1
+            with open("counts.log", "a") as count:
+                count.write("\nFile 2 has MARUTI Keywords " + str(c2) + " times at time " + str(datetime.now()))
+    await asyncio.sleep(0.5)
+    return (await f2writer(loop))
 
-            if pstring == "MARUTI ":
-                flag = 1
-            else:
-                flag = 0
 
-            with open("file1.txt", "a") as f1:
-                freq1 += 1
-                f1.write(pstring)
-                if flag == 1:
-                    f1M += 1
-        else:
+loop = asyncio.get_event_loop()
+loop.create_task(f1writer(loop))
+loop.create_task(f2writer(loop))
+loop.run_forever()
 
-            pstring = string_generator()
-
-            if pstring == "MARUTI ":
-                flag = 1
-            else:
-                flag = 0
-
-            with open("file2.txt", "a") as f2:
-                freq2 += 1
-                f2.write(pstring)
-                if flag == 1:
-                    f2M += 1
-
-        counter += 1
-        res = "\nFrequency in File 1: {}/{}\nFrequency in File 2: {}/{}".format(f1M, freq1, f2M, freq2)
-        print(res)
-        counts.write(res)
-        time.sleep(0.5)
