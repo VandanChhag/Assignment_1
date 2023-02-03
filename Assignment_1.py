@@ -53,4 +53,3 @@ loop = asyncio.get_event_loop()
 loop.create_task(f1writer(loop))
 loop.create_task(f2writer(loop))
 loop.run_forever()
-
